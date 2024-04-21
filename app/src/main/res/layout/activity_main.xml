@@ -8,10 +8,10 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/game_start_btn"
+        android:id="@+id/skipBtn_welcomeScreen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/game_start_btn_txt"
+        android:text="@string/skipBtn_txt_welcomeScreen"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

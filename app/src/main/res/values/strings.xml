@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">LabExam03_game_2</string>
 
-    <string name="game_start_btn_txt">Start Game</string>
+    <string name="skipBtn_txt_welcomeScreen">Skip</string>
 
     <string name="mainMenu_heading">Main Menu</string>
 </resources>

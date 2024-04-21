@@ -2,6 +2,8 @@ package com.example.labexam03_game_2
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -10,7 +12,8 @@ import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var game_start_btn:Button
+    val SPLASH_DELAY: Long = 2000 // 2 seconds
+    var shouldNavigate = false // identify whether  skip button was clicked
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,11 +25,27 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        game_start_btn = findViewById(R.id.game_start_btn)
-        game_start_btn.setOnClickListener {
-            intent = Intent(this, MainMenu::class.java)
-            startActivity(intent)
+        // Delay navigation to MainMenu after SPLASH_DELAY milliseconds
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (!shouldNavigate) {
+                navigateToMainMenu()
+            }
+        }, SPLASH_DELAY)
+
+        // Navigate to main menu using skip button
+        val skipBtn_welcomeScreen: Button = findViewById(R.id.skipBtn_welcomeScreen)
+        skipBtn_welcomeScreen.setOnClickListener {
+            shouldNavigate = true
+            navigateToMainMenu()
         }
 
     }
+
+    //function for navigate to the main menu
+    fun navigateToMainMenu() {
+        val intent = Intent(this, MainMenu::class.java)
+        startActivity(intent)
+        finish() // Finish current activity so user cannot navigate back to splash screen
+    }
+
 }
