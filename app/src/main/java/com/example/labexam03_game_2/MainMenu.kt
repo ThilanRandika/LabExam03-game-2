@@ -20,10 +20,4 @@ class MainMenu : AppCompatActivity() {
         }
     }
 
-    //function for start game from the main menu
-    fun startPlayGame(v: View){
-        val intent = Intent(this, GamePlay::class.java)
-        startActivity(intent)
-    }
-
 }
