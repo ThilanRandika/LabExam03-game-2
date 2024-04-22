@@ -6,6 +6,7 @@ import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.SoundPool
 import android.os.Build
+import android.view.MotionEvent
 import android.view.SurfaceView
 import java.util.Random
 
@@ -17,6 +18,9 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
     private var background1: Background
     private var background2: Background
     private var paint: Paint = Paint()
+    private var player: Player
+    private var startY: Float = 0f  // Stores the y-coordinate of the touch when ACTION_DOWN event occurs
+    private var swiped = false  // Keeps track of whether the user swiped up or not
 
     companion object {
         var screenRatioX: Float = 0f
@@ -32,6 +36,8 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
 
         background1 = Background(screenX, screenY, resources)
         background2 = Background(screenX, screenY, resources)
+
+        player = Player(this, screenY, resources, screenRatioX, screenRatioY)   // Initialize a player
 
         background2.x = screenX
 
@@ -71,6 +77,7 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
             canvas.drawBitmap(background2.background, background2.x.toFloat(), background2.y.toFloat(), paint)
 
 
+            canvas.drawBitmap(player.getplayer(), player.x.toFloat(), player.y.toFloat(), paint)
             holder.unlockCanvasAndPost(canvas)
         }
     }
@@ -89,6 +96,21 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
             background2.x = screenX
         }
 
+        if (player.isGoingUp) {
+            player.y -= (30 * screenRatioY).toInt() // Player go up
+        } else {
+            player.y += (30 * screenRatioY).toInt() // Player go down
+        }
+
+        // not allow player to pass the screen borders
+        if (player.y < 0) {
+            player.y = 0
+        }
+
+        if (player.y >= screenY - player.height) {
+            player.y = screenY - player.height
+        }
+
 
     }
 
@@ -99,6 +121,31 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
         } catch (e: InterruptedException) {
             e.printStackTrace()
         }
+    }
+
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                startY = event.y    // Store the initial y-coordinate of the touch
+                swiped = false  // Reset the swiped flag
+            }
+            MotionEvent.ACTION_UP -> {
+                if (!swiped && event.x < screenX / 2) {
+                    // User tapped on the left side
+                    player.isGoingUp = true
+                }
+                player.isGoingUp = false
+            }
+            MotionEvent.ACTION_MOVE -> {
+                if (event.y - startY < -50 && event.x < screenX / 2) {
+                    // User swiped up on the left side
+                    player.isGoingUp = true
+                    swiped = true
+                }
+            }
+        }
+        return true
     }
 
 }
