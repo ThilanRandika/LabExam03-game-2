@@ -12,6 +12,7 @@ class Player (private val gameView: GameView, screenY: Int, res: Resources, priv
     var height: Int
     private var player1: Bitmap
     private var player2: Bitmap
+    private var playerUp: Bitmap
     private var wingCounter = 0
     var isGoingUp = false
 
@@ -19,6 +20,7 @@ class Player (private val gameView: GameView, screenY: Int, res: Resources, priv
     init {
         player1 = BitmapFactory.decodeResource(res, R.drawable.player1)
         player2 = BitmapFactory.decodeResource(res, R.drawable.player2)
+        playerUp = BitmapFactory.decodeResource(res, R.drawable.player_up)
 
         width = player1.width
         height = player1.height
@@ -31,6 +33,7 @@ class Player (private val gameView: GameView, screenY: Int, res: Resources, priv
 
         player1 = Bitmap.createScaledBitmap(player1, width, height, false)
         player2 = Bitmap.createScaledBitmap(player2, width, height, false)
+        playerUp = Bitmap.createScaledBitmap(playerUp, width, height, false)
 
         y = screenY / 2
         x = (64 * screenRatioX).toInt()
@@ -38,6 +41,12 @@ class Player (private val gameView: GameView, screenY: Int, res: Resources, priv
 
 
     fun getplayer(): Bitmap {
+
+        // Check if the player is going up
+        if (isGoingUp) {
+            // Return the image for when the player is going up
+            return playerUp
+        }
 
         if (wingCounter == 0) {
             wingCounter++
