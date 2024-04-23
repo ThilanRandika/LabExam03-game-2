@@ -3,6 +3,7 @@ package com.example.labexam03_game_2
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Rect
 
 class Player (private val gameView: GameView, screenY: Int, res: Resources, private val screenRatioX: Float, private val screenRatioY: Float){
 
@@ -15,6 +16,8 @@ class Player (private val gameView: GameView, screenY: Int, res: Resources, priv
     private var playerUp: Bitmap
     private var wingCounter = 0
     var isGoingUp = false
+    var isGoingDown = false
+    private var dead: Bitmap
 
 
     init {
@@ -25,8 +28,8 @@ class Player (private val gameView: GameView, screenY: Int, res: Resources, priv
         width = player1.width
         height = player1.height
 
-        width /= 2
-        height /= 2
+        width /= 4
+        height /= 4
 
         width = (width * screenRatioX).toInt()
         height = (height * screenRatioY).toInt()
@@ -35,8 +38,11 @@ class Player (private val gameView: GameView, screenY: Int, res: Resources, priv
         player2 = Bitmap.createScaledBitmap(player2, width, height, false)
         playerUp = Bitmap.createScaledBitmap(playerUp, width, height, false)
 
-        y = screenY / 2
-        x = (64 * screenRatioX).toInt()
+        dead = BitmapFactory.decodeResource(res, R.drawable.player_dead)
+        dead = Bitmap.createScaledBitmap(dead, width, height, false)
+
+        y = screenY / 2                     // Player starts vertically center of the screen
+        x = (256 * screenRatioX).toInt()    // Starting X position
     }
 
 
@@ -54,6 +60,16 @@ class Player (private val gameView: GameView, screenY: Int, res: Resources, priv
         }
         wingCounter--
         return player2
+    }
+
+
+    fun getCollisionShape(): Rect {
+        return Rect(x, y, x + width, y + height)
+    }
+
+
+    fun getDead(): Bitmap {
+        return dead
     }
 
 }

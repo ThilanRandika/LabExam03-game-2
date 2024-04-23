@@ -2,6 +2,7 @@ package com.example.labexam03_game_2
 
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.SoundPool
@@ -21,6 +22,8 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
     private var player: Player
     private var startY: Float = 0f  // Stores the y-coordinate of the touch when ACTION_DOWN event occurs
     private var swiped = false  // Keeps track of whether the user swiped up or not
+    private var aliens = arrayOfNulls<Alien>(2)
+    private var random = Random()
 
     companion object {
         var screenRatioX: Float = 0f
@@ -40,6 +43,13 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
         player = Player(this, screenY, resources, screenRatioX, screenRatioY)   // Initialize a player
 
         background2.x = screenX
+
+        for (i in aliens.indices) {
+            val alien = Alien(resources)
+            aliens[i] = alien
+        }
+
+        random = Random()
 
     }
 
@@ -76,6 +86,14 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
             canvas.drawBitmap(background1.background, background1.x.toFloat(), background1.y.toFloat(), paint)
             canvas.drawBitmap(background2.background, background2.x.toFloat(), background2.y.toFloat(), paint)
 
+            aliens.forEach { alien -> alien?.let { canvas.drawBitmap(it.getAlien(), it.x.toFloat(), it.y.toFloat(), paint) } }
+
+            if (isGameOver) {
+                isPlaying = false
+                canvas.drawBitmap(player.getDead(), player.x.toFloat(), player.y.toFloat(), paint)
+                holder.unlockCanvasAndPost(canvas)
+                return
+            }
 
             canvas.drawBitmap(player.getplayer(), player.x.toFloat(), player.y.toFloat(), paint)
             holder.unlockCanvasAndPost(canvas)
@@ -96,19 +114,41 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
             background2.x = screenX
         }
 
+        // player's vertical movement based on isGoingUp and isGoingDown
         if (player.isGoingUp) {
-            player.y -= (30 * screenRatioY).toInt() // Player go up
-        } else {
-            player.y += (30 * screenRatioY).toInt() // Player go down
-        }
+            player.y -= (20 * screenRatioY).toInt() // Player go up
+        } else if (player.isGoingDown) {
+            player.y += (20 * screenRatioY).toInt() // Player go down
+        } else
+            player.y += (5 * screenRatioY).toInt() // Player fall with planet's gravity
 
         // not allow player to pass the screen borders
         if (player.y < 0) {
             player.y = 0
         }
 
-        if (player.y >= screenY - player.height) {
-            player.y = screenY - player.height
+        if (player.y >= screenY - player.height - 100) {
+            player.y = screenY - player.height - 100
+        }
+
+
+        for (alien in aliens) {
+            if (alien != null) {
+                alien.x -= alien.speed
+                if (alien.x + alien.width < 0) {
+                    val bound = (30 * screenRatioX).toInt()
+                    alien.speed = random.nextInt(bound)
+                    if (alien.speed < 10 * screenRatioX) {
+                        alien.speed = (10 * screenRatioX).toInt()
+                    }
+                    alien.x = screenX   // Position Alien to the right side of the screen
+                    alien.y = random.nextInt(screenY - alien.height)
+                }
+                if (Rect.intersects(alien.getCollisionShape(), player.getCollisionShape())) {
+                    isGameOver = true
+                    return
+                }
+            }
         }
 
 
@@ -128,7 +168,7 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 startY = event.y    // Store the initial y-coordinate of the touch
-                swiped = false  // Reset the swiped flag
+                swiped = false      // Reset the swiped flag
             }
             MotionEvent.ACTION_UP -> {
                 if (!swiped && event.x < screenX / 2) {
@@ -136,16 +176,22 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
                     player.isGoingUp = true
                 }
                 player.isGoingUp = false
+                player.isGoingDown = false // Reset isGoingDown flag
             }
             MotionEvent.ACTION_MOVE -> {
                 if (event.y - startY < -50 && event.x < screenX / 2) {
                     // User swiped up on the left side
                     player.isGoingUp = true
                     swiped = true
+                    player.isGoingDown = false // Reset isGoingDown flag
+                } else if (event.y - startY > 50 && event.x < screenX / 2) {
+                    // User swiped down on the left side
+                    player.isGoingDown = true
                 }
             }
         }
         return true
     }
+
 
 }
