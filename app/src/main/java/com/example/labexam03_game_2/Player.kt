@@ -17,6 +17,8 @@ class Player (private val gameView: GameView, screenY: Int, res: Resources, priv
     private var wingCounter = 0
     var isGoingUp = false
     var isGoingDown = false
+    var isGoingRight = false
+    var isGoingLeft = false
     private var dead: Bitmap
 
 

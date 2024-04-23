@@ -21,6 +21,7 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
     private var paint: Paint = Paint()
     private var player: Player
     private var startY: Float = 0f  // Stores the y-coordinate of the touch when ACTION_DOWN event occurs
+    private var startX: Float = 0f  // Stores the X-coordinate of the touch when ACTION_LEFT and ACTION_RIGHT event occurs
     private var swiped = false  // Keeps track of whether the user swiped up or not
     private var aliens = arrayOfNulls<Alien>(2)
     private var random = Random()
@@ -114,13 +115,18 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
             background2.x = screenX
         }
 
-        // player's vertical movement based on isGoingUp and isGoingDown
+        // player's movements
         if (player.isGoingUp) {
             player.y -= (20 * screenRatioY).toInt() // Player go up
         } else if (player.isGoingDown) {
             player.y += (20 * screenRatioY).toInt() // Player go down
+        } else if (player.isGoingLeft) {
+            player.x -= (20 * screenRatioX).toInt() // Player go left
+        } else if (player.isGoingRight) {
+            player.x += (10 * screenRatioX).toInt() // Player go right
         } else
-            player.y += (5 * screenRatioY).toInt() // Player fall with planet's gravity
+            player.y += (5 * screenRatioY).toInt() // Player fall under the planet's gravity
+
 
         // not allow player to pass the screen borders
         if (player.y < 0) {
@@ -129,6 +135,14 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
 
         if (player.y >= screenY - player.height - 100) {
             player.y = screenY - player.height - 100
+        }
+
+        if (player.x < 0) {
+            player.x = 0
+        }
+
+        if (player.x >= screenX - player.width) {
+            player.x = screenX - player.width
         }
 
 
@@ -168,6 +182,7 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 startY = event.y    // Store the initial y-coordinate of the touch
+                startX = event.x    // Store the initial x-coordinate of the touch
                 swiped = false      // Reset the swiped flag
             }
             MotionEvent.ACTION_UP -> {
@@ -177,6 +192,8 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
                 }
                 player.isGoingUp = false
                 player.isGoingDown = false // Reset isGoingDown flag
+                player.isGoingLeft = false // Reset isGoingLeft flag
+                player.isGoingRight = false // Reset isGoingRight flag
             }
             MotionEvent.ACTION_MOVE -> {
                 if (event.y - startY < -50 && event.x < screenX / 2) {
@@ -184,14 +201,33 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
                     player.isGoingUp = true
                     swiped = true
                     player.isGoingDown = false // Reset isGoingDown flag
+                    player.isGoingRight = false // Reset isGoingRight flag
+                    player.isGoingLeft = false  // Reset isGoingLeft flag
                 } else if (event.y - startY > 50 && event.x < screenX / 2) {
                     // User swiped down on the left side
                     player.isGoingDown = true
+                    player.isGoingUp = false // Reset isGoingUp flag
+                    player.isGoingRight = false // Reset isGoingRight flag
+                    player.isGoingLeft = false  // Reset isGoingLeft flag
+                } else if (event.x - startX < -50 && event.x < screenX / 2) {
+                    // User swiped left on the left side
+                    player.isGoingLeft = true
+                    player.isGoingUp = false // Reset isGoingUp flag
+                    player.isGoingDown = false // Reset isGoingDown flag
+                    player.isGoingRight = false // Reset isGoingRight flag
+                } else if (event.x - startX > 50 && event.x < screenX / 2) {
+                    // User swiped right on the left side
+                    player.isGoingRight = true
+                    player.isGoingUp = false // Reset isGoingUp flag
+                    player.isGoingDown = false // Reset isGoingDown flag
+                    player.isGoingLeft = false // Reset isGoingLeft flag
                 }
             }
         }
         return true
     }
+
+
 
 
 }
