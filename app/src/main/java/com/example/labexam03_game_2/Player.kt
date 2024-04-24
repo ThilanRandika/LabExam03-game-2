@@ -50,9 +50,9 @@ class Player (private val gameView: GameView, screenY: Int, res: Resources, priv
 
     fun getplayer(): Bitmap {
 
-        // Check if the player is going up
-        if (isGoingUp) {
-            // Return the image for when the player is going up
+        // Check if the player is moving
+        if (isGoingUp || isGoingDown || isGoingLeft || isGoingRight) {
+            // Return the image for when the player is moving
             return playerUp
         }
 
