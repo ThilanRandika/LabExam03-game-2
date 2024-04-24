@@ -32,6 +32,8 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
     private var points = 0
     private var sounds: SoundPool
     private var gameOverSound: Int
+    private var jetpackSound: Int
+    private var jetpackSoundStreamId: Int = 0  // Initialize jetpack sound stream ID
 
     companion object {
         var screenRatioX: Float = 0f
@@ -53,7 +55,9 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
         } else {
             sounds = SoundPool(1, AudioManager.STREAM_MUSIC, 0)
         }
+        // Set all sounds
         gameOverSound = sounds.load(activity, R.raw.game_over, 1)
+        jetpackSound = sounds.load(activity, R.raw.jetpack, 1)
 
         screenRatioX = 1920f / screenX
         screenRatioY = 1080f / screenY
@@ -119,7 +123,6 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
                 if (prefs.getBoolean("isSoundOn", true)) {
                     sounds.play(gameOverSound, 1f, 1f, 0, 0, 1f)
                 }
-
 
                 isPlaying = false
                 canvas.drawBitmap(player.getDead(), player.x.toFloat(), player.y.toFloat(), paint)
@@ -264,8 +267,19 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
                 startY = event.y    // Store the initial y-coordinate of the touch
                 startX = event.x    // Store the initial x-coordinate of the touch
                 swiped = false      // Reset the swiped flag
+
+                // Start playing jetpack sound when swiping begins
+                if (event.x < screenX / 2) {
+                    if (prefs.getBoolean("isSoundOn", true)) {
+                        jetpackSoundStreamId = sounds.play(jetpackSound, 1f, 1f, 0, -1, 1f)
+                    }
+                }
             }
             MotionEvent.ACTION_UP -> {
+                // Stop playing jetpack sound when touch is released
+                if (jetpackSoundStreamId != 0) {
+                    sounds.stop(jetpackSoundStreamId)
+                }
                 if (!swiped && event.x < screenX / 2) {
                     // User tapped on the left side
                     player.isGoingUp = true
@@ -306,6 +320,7 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
         }
         return true
     }
+
 
 
 
