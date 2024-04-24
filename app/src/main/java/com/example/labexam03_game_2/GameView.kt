@@ -238,7 +238,7 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
     private fun gameOver() {
         try {
             Thread.sleep(3000)
-            val intent = Intent(activity, MainMenu::class.java)
+            val intent = Intent(activity, GameOverScreenActivity::class.java)
             intent.putExtra("POINTS", points)
 
             activity.startActivity(intent)

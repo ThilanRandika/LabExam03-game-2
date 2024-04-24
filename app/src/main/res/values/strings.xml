@@ -4,4 +4,6 @@
     <string name="skipBtn_txt_welcomeScreen">Skip</string>
 
     <string name="mainMenu_heading">Main Menu</string>
+
+    <string name="gameOver_text">Game Over!</string>
 </resources>
