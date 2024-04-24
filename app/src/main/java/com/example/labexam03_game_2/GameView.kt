@@ -30,6 +30,8 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
     private var random = Random()
     private var prefs: SharedPreferences = activity.getSharedPreferences("game", Context.MODE_PRIVATE)
     private var points = 0
+    private var sounds: SoundPool
+    private var gameOverSound: Int
 
     companion object {
         var screenRatioX: Float = 0f
@@ -39,6 +41,19 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
 
 
     init {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val audioAttributes = AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .build()
+            sounds = SoundPool.Builder()
+                .setAudioAttributes(audioAttributes)
+                .build()
+        } else {
+            sounds = SoundPool(1, AudioManager.STREAM_MUSIC, 0)
+        }
+        gameOverSound = sounds.load(activity, R.raw.game_over, 1)
 
         screenRatioX = 1920f / screenX
         screenRatioY = 1080f / screenY
@@ -100,6 +115,12 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
             canvas.drawText(points.toString(), (screenX / 2).toFloat(), 164f, paint)
 
             if (isGameOver) {
+
+                if (prefs.getBoolean("isSoundOn", true)) {
+                    sounds.play(gameOverSound, 1f, 1f, 0, 0, 1f)
+                }
+
+
                 isPlaying = false
                 canvas.drawBitmap(player.getDead(), player.x.toFloat(), player.y.toFloat(), paint)
                 holder.unlockCanvasAndPost(canvas)
@@ -184,7 +205,7 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
 
 
     private fun savePoints() {
-        val prefs = activity.getSharedPreferences("high_scores", Context.MODE_PRIVATE)
+        prefs = activity.getSharedPreferences("high_scores", Context.MODE_PRIVATE)
         val highScoresSet = prefs.getStringSet("high_scores", HashSet()) ?: HashSet()
 
         // Convert the set to a list of integers

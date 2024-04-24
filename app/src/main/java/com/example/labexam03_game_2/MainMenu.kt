@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 
 class MainMenu : AppCompatActivity() {
 
-    private var highScores: IntArray? = null // Declare highScores as a member variable
+    private var isSoundOn = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,16 +32,19 @@ class MainMenu : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
 
-        // Retrieve high scores from the intent extras
-        highScores = intent.getIntArrayExtra("HIGH_SCORES")
+        val prefs = getSharedPreferences("game", MODE_PRIVATE)
+        isSoundOn = prefs.getBoolean("isSoundOn", true)
 
-        // Update the UI to display the high scores
-        if (highScores != null) {
-            val highScoresTextView = findViewById<TextView>(R.id.highScoresTextView)
-            highScoresTextView.text = "High Scores:\n"
-            for ((index, score) in highScores!!.withIndex()) {
-                highScoresTextView.append("${index + 1}. $score\n")
-            }
+        val soundCtrl = findViewById<ImageView>(R.id.soundBtn_mainMenu)
+        soundCtrl.setImageResource(if (isSoundOn) R.drawable.sound_on else R.drawable.mute)
+
+        soundCtrl.setOnClickListener {
+            isSoundOn = !isSoundOn
+            soundCtrl.setImageResource(if (isSoundOn) R.drawable.sound_on else R.drawable.mute)
+
+            val editor = prefs.edit()
+            editor.putBoolean("isSoundOn", isSoundOn)
+            editor.apply()
         }
 
 
