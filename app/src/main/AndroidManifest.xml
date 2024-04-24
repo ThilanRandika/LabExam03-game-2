@@ -13,15 +13,20 @@
         android:theme="@style/Theme.LabExam03_game_2"
         tools:targetApi="31">
         <activity
-            android:name=".GameActivity"
+            android:name=".Leaderboard"
             android:exported="false"
             android:screenOrientation="landscape"
             android:theme="@style/Base.Theme.LabExam03_game_2.noActionBar"/>
         <activity
+            android:name=".GameActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            android:theme="@style/Base.Theme.LabExam03_game_2.noActionBar" />
+        <activity
             android:name=".MainMenu"
             android:exported="false"
             android:screenOrientation="landscape"
-            android:theme="@style/Base.Theme.LabExam03_game_2.noActionBar"/>
+            android:theme="@style/Base.Theme.LabExam03_game_2.noActionBar" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

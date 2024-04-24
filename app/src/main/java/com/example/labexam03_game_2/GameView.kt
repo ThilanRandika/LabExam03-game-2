@@ -1,5 +1,8 @@
 package com.example.labexam03_game_2
 
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
@@ -25,6 +28,8 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
     private var swiped = false  // Keeps track of whether the user swiped up or not
     private var aliens = arrayOfNulls<Alien>(2)
     private var random = Random()
+    private var prefs: SharedPreferences = activity.getSharedPreferences("game", Context.MODE_PRIVATE)
+    private var points = 0
 
     companion object {
         var screenRatioX: Float = 0f
@@ -44,6 +49,9 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
         player = Player(this, screenY, resources, screenRatioX, screenRatioY)   // Initialize a player
 
         background2.x = screenX
+
+        paint.textSize = 128f
+        paint.color = Color.WHITE
 
         for (i in aliens.indices) {
             val alien = Alien(resources)
@@ -89,10 +97,14 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
 
             aliens.forEach { alien -> alien?.let { canvas.drawBitmap(it.getAlien(), it.x.toFloat(), it.y.toFloat(), paint) } }
 
+            canvas.drawText(points.toString(), (screenX / 2).toFloat(), 164f, paint)
+
             if (isGameOver) {
                 isPlaying = false
                 canvas.drawBitmap(player.getDead(), player.x.toFloat(), player.y.toFloat(), paint)
                 holder.unlockCanvasAndPost(canvas)
+                savePoints()
+                gameOver()
                 return
             }
 
@@ -150,6 +162,7 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
             if (alien != null) {
                 alien.x -= alien.speed
                 if (alien.x + alien.width < 0) {
+                    points++ // Increase points when an alien leaves the screen
                     val bound = (30 * screenRatioX).toInt()
                     alien.speed = random.nextInt(bound)
                     if (alien.speed < 10 * screenRatioX) {
@@ -167,6 +180,52 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
 
 
     }
+
+
+
+    private fun savePoints() {
+        val prefs = activity.getSharedPreferences("high_scores", Context.MODE_PRIVATE)
+        val highScoresSet = prefs.getStringSet("high_scores", HashSet()) ?: HashSet()
+
+        // Convert the set to a list of integers
+        val highScoresList = highScoresSet.map { it.toInt() }.toMutableList()
+
+        // Add the current score to the list
+        highScoresList.add(points)
+
+        // Sort the list in descending order
+        highScoresList.sortDescending()
+
+        // Keep only the top 5 scores
+        if (highScoresList.size > 5) {
+            highScoresList.removeAt(5)
+        }
+
+        // Convert the list back to a set of strings
+        val updatedHighScoresSet = highScoresList.map { it.toString() }.toSet()
+
+        // Save the updated set of high scores
+        val editor = prefs.edit()
+        editor.putStringSet("high_scores", updatedHighScoresSet)
+        editor.apply()
+    }
+
+
+    private fun gameOver() {
+        try {
+            Thread.sleep(3000)
+            val intent = Intent(activity, MainMenu::class.java)
+            intent.putExtra("POINTS", points)
+
+            activity.startActivity(intent)
+            activity.finish()
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+    }
+
+
+
 
 
     private fun sleep() {
