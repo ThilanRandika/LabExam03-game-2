@@ -8,14 +8,28 @@
     android:background="@drawable/background"
     tools:context=".GameOverScreenActivity">
 
+    <TextView
+        android:id="@+id/gamePoints"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Points: "
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <FrameLayout
         android:layout_width="500dp"
         android:layout_height="200dp"
-        android:background="@color/black"
+        android:layout_marginTop="32dp"
+        android:background="#21488F"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gamePoints"
         app:layout_constraintVertical_bias="0.5">
 
         <LinearLayout
@@ -39,19 +53,54 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/replayBtn_gameOver"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="startTheGameAgain"
-                    app:srcCompat="@android:drawable/ic_media_previous" />
+                <LinearLayout
+                    android:id="@+id/replay"
+                    android:layout_width="80dp"
+                    android:layout_height="120dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/mainMenuBtn_gameOver"
+                    <ImageView
+                        android:id="@+id/replayBtn_gameOver"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:onClick="startTheGameAgain"
+                        app:srcCompat="@drawable/replaybtn_gameover" />
+
+                    <TextView
+                        android:id="@+id/replayBtnTxt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/game_over_replay_btn"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/mainMenu_gameOver"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="openMainMenu"
-                    app:srcCompat="@android:drawable/ic_menu_agenda" />
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/mainMenuBtn_gameOver"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:onClick="openMainMenu"
+                        app:srcCompat="@drawable/homebtn_gameover" />
+
+                    <TextView
+                        android:id="@+id/mainMenuTxt_gameOver"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/mainMenuTxt_gameOver"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
             </LinearLayout>
         </LinearLayout>
 

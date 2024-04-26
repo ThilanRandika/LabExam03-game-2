@@ -3,6 +3,7 @@ package com.example.labexam03_game_2
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -18,6 +19,17 @@ class GameOverScreenActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // Retrieve points value from intent extras
+        val points = intent.getIntExtra("POINTS", 0)
+
+        // Find the TextView for displaying points
+        val pointsTextView = findViewById<TextView>(R.id.gamePoints)
+
+        // Set the points value to the TextView
+        pointsTextView.text = "Points: $points"
+
+
     }
 
     //start the game when the rePlay button clicks on the Game Over Menu
