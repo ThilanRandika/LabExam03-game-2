@@ -36,11 +36,13 @@ class GameOverScreenActivity : AppCompatActivity() {
     fun startTheGameAgain(v: View) {
         val intent = Intent(this, GameActivity::class.java)
         startActivity(intent)
+        this.finish()
     }
 
     //Go to the MainMenu
     fun openMainMenu(v: View) {
         val intent = Intent(this, MainMenu::class.java)
         startActivity(intent)
+        this.finish()
     }
 }

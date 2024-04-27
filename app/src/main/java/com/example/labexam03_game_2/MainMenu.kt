@@ -62,6 +62,11 @@ class MainMenu : AppCompatActivity() {
         startActivity(intent)
     }
 
+    // Function to close the game
+    fun quitGame(v: View) {
+        finishAffinity()
+    }
+
 
 
 

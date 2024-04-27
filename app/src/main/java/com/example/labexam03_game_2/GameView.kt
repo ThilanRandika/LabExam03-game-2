@@ -79,6 +79,8 @@ class GameView (private val activity: GameActivity, private val screenX: Int, pr
 
         random = Random()
 
+        points = -2 // Set points to 0
+
     }
 
 
