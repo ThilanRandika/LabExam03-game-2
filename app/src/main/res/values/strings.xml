@@ -4,4 +4,11 @@
     <string name="skipBtn_txt_welcomeScreen">Skip</string>
 
     <string name="mainMenu_heading">Main Menu</string>
+    <string name="mainMenu_gameName">Mars Traveller</string>
+
+    <string name="gameOver_text">Game Over!</string>
+    <string name="main_menu_leaderBoard_btn">Leaderboard</string>
+    <string name="game_over_replay_btn">Replay</string>
+    <string name="mainMenuTxt_gameOver">Main Menu</string>
+    <string name="leaderBoard_leaderBoardScreen">Leaderboard</string>
 </resources>
