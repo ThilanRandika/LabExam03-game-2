@@ -8,6 +8,24 @@
     android:background="@drawable/main_menu_background"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/mainAct_gameName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:shadowDx="10"
+        android:shadowDy="10"
+        android:shadowRadius="5"
+        android:shadowColor="@color/white"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/bowlby_one_sc"
+        android:text="@string/mainMenu_gameName"
+        android:textColor="@color/black"
+        android:textSize="48sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/skipBtn_welcomeScreen"
         android:layout_width="wrap_content"
