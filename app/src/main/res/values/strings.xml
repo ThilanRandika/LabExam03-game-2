@@ -11,4 +11,5 @@
     <string name="game_over_replay_btn">Replay</string>
     <string name="mainMenuTxt_gameOver">Main Menu</string>
     <string name="leaderBoard_leaderBoardScreen">Leaderboard</string>
+    <string name="leaderBoardBackBtn">Back</string>
 </resources>
