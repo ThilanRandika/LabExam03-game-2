@@ -1,7 +1,9 @@
 package com.example.labexam03_game_2
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -45,4 +47,10 @@ class Leaderboard : AppCompatActivity() {
         }
 
     }
+
+    fun openMainMenu(v: View) {
+        val intent = Intent(this, MainMenu::class.java)
+        startActivity(intent)
+    }
+
 }
